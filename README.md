@@ -31,7 +31,7 @@ By the end of the course, students will be able to:
 
 ---
 
-## 🧪 Labs
+## Labs
 The course includes **6 labs** using the Arduino Mega 2560:
 1. Data Representation & Logic Operations  
 2. Instruction Set & Assembly Integration  
@@ -53,9 +53,3 @@ The course includes **6 labs** using the Arduino Mega 2560:
 **Prof. Lester D. Suarez**  
 School of Engineering + Technology – Miami Dade College  
 Email: lsuarez9@mdc.edu  
-
----
-
-## 📌 Note
-Due to a scheduling misunderstanding, the first class on **August 25, 2025** was missed.  
-The instructor will do their best to make up for this session during the semester.  
