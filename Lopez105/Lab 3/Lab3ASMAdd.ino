@@ -1,0 +1,39 @@
+// EX2_ASM_Add.ino
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+#define PIN_MASK  (1<<PB7)
+#define PIN_OUT() (DDRB  |= PIN_MASK)
+#define SET_HI()  (PORTB |= PIN_MASK)
+#define SET_LO()  (PORTB &= ~PIN_MASK)
+
+const uint32_t ITERS = 6000000UL;
+
+volatile uint8_t sink8;
+
+void setup(){ cli(); PIN_OUT(); SET_LO(); }
+
+void loop(){
+  register uint8_t a asm("r24") = 0;
+  register uint8_t b asm("r22") = 3;
+
+  // Use 16-bit inner counter (Z=r31:r30) inside a small outer loop
+  const uint16_t OUT = (ITERS/65535UL);
+
+  SET_HI();
+  for(uint16_t outer=0; outer<OUT; ++outer){
+    asm volatile(
+      "ldi  r30, 0xFF   \n\t"   // Z = 65535
+      "ldi  r31, 0xFF   \n\t"
+      "1:               \n\t"
+      "add  r24, r22    \n\t"   // a += b
+      "sbiw r30, 1      \n\t"   // Z--
+      "brne 1b          \n\t"
+      : "+r"(a) : "r"(b) : "r30","r31","cc"
+    );
+  }
+  SET_LO();
+
+  sink8 = a;
+  for(volatile uint32_t d=0; d<800000UL; ++d) {}
+}
