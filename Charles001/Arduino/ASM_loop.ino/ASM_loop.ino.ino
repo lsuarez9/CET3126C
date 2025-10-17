@@ -1,0 +1,40 @@
+// EX1_C_Mul_Naive.ino
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+#define PIN_MASK  (1<<PB7)   // D13
+#define PIN_OUT() (DDRB  |= PIN_MASK)
+#define SET_HI()  (PORTB |= PIN_MASK)
+#define SET_LO()  (PORTB &= ~PIN_MASK)
+
+const uint32_t OUTER = 1200UL; // increase/decrease to change pulse length
+const uint8_t  XVAL  = 25;
+const uint8_t  MVAL  = 97;     // 97 additions per multiply
+
+volatile uint16_t sink16;
+
+static uint16_t mul_naive_add(uint8_t x, uint8_t m){
+  uint16_t acc = 0;
+  for(uint8_t k=0; k<m; ++k){
+    acc += x;                  // slow on purpose
+  }
+  return acc;
+}
+
+void setup(){
+  cli();               // clean timing (no interrupts)
+  PIN_OUT();
+  SET_LO();
+}
+
+void loop(){
+  uint16_t res = 0;
+  SET_HI();                                // start measuring
+  for(uint32_t i=0;i<OUTER;++i){
+    res ^= mul_naive_add(XVAL, MVAL);
+  }
+  SET_LO();                                // stop measuring
+
+  sink16 = res;                            // keep result alive
+  for(volatile uint32_t d=0; d<800000UL; ++d) {} // spacing between pulses
+}
