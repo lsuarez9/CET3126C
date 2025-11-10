@@ -1,0 +1,41 @@
+// Define SET_HI and SET_LO macros for pin 13
+#define SET_HI()  digitalWrite(13, HIGH)  // Set pin 13 HIGH
+#define SET_LO()  digitalWrite(13, LOW)   // Set pin 13 LOW
+
+#include <EEPROM.h>  // Include EEPROM library
+
+void setup() {
+  // Initialize Serial and pin 13
+  Serial.begin(115200);
+  pinMode(13, OUTPUT);
+}
+
+void byteWriteRead1B() {
+  Serial.println(F("Starting 1 Byte Write/Read Test"));
+  
+                      // Set pin 13 LOW after the operation
+
+
+
+}
+
+void loop() {
+  // Call the byteWriteRead1B function
+  // WRITE 1 Byte
+  unsigned long t0 = micros();
+  EEPROM.write(100, 123);          // Writing value 123 to address 100
+  EEPROM.write(101, 123);          // Writing value 123 to address 100
+  unsigned long t1 = micros();
+  Serial.print(F("WRITE 1B: "));
+  Serial.print(t1 - t0);           // Output the elapsed time in microseconds
+  Serial.println(F(" us"));
+  
+
+    // WRITE 1 Byte
+  SET_HI();                        // Set pin 13 HIGH before the operation
+  EEPROM.write(100, 123);          // Writing value 123 to address 100
+  EEPROM.write(101, 123);          // Writing value 123 to address 100
+  SET_LO();  
+
+  
+  }
