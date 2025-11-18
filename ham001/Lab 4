@@ -1,41 +1,138 @@
-// Define SET_HI and SET_LO macros for pin 13
-#define SET_HI()  digitalWrite(13, HIGH)  // Set pin 13 HIGH
-#define SET_LO()  digitalWrite(13, LOW)   // Set pin 13 LOW
+#define SET_HI()  digitalWrite(13, HIGH)
+#define SET_LO()  digitalWrite(13, LOW)
 
-#include <EEPROM.h>  // Include EEPROM library
+#include <EEPROM.h>
 
 void setup() {
-  // Initialize Serial and pin 13
   Serial.begin(115200);
   pinMode(13, OUTPUT);
 }
 
-void byteWriteRead1B() {
-  Serial.println(F("Starting 1 Byte Write/Read Test"));
-  
-                      // Set pin 13 LOW after the operation
-
-
-
-}
-
 void loop() {
-  // Call the byteWriteRead1B function
-  // WRITE 1 Byte
+
+  // ----------- WRITE 1 BYTE -----------
   unsigned long t0 = micros();
-  EEPROM.write(100, 123);          // Writing value 123 to address 100
-  EEPROM.write(101, 123);          // Writing value 123 to address 100
+  EEPROM.write(100, 123);
   unsigned long t1 = micros();
   Serial.print(F("WRITE 1B: "));
-  Serial.print(t1 - t0);           // Output the elapsed time in microseconds
-  Serial.println(F(" us"));
-  
+  Serial.println(t1 - t0);
 
-    // WRITE 1 Byte
-  SET_HI();                        // Set pin 13 HIGH before the operation
-  EEPROM.write(100, 123);          // Writing value 123 to address 100
-  EEPROM.write(101, 123);          // Writing value 123 to address 100
-  SET_LO();  
+  SET_HI();
+  EEPROM.write(100, 123);
+  SET_LO();
 
-  
+  delay(10);
+
+
+  // ----------- READ 1 BYTE -----------
+  t0 = micros();
+  byte r = EEPROM.read(100);
+  t1 = micros();
+  Serial.print(F("READ 1B: "));
+  Serial.println(t1 - t0);
+
+  SET_HI();
+  r = EEPROM.read(100);
+  SET_LO();
+
+  delay(10);
+
+
+
+  // ----------- WRITE 2 BYTES -----------
+  t0 = micros();
+  EEPROM.write(200, 1);
+  EEPROM.write(201, 2);
+  t1 = micros();
+  Serial.print(F("WRITE 2B: "));
+  Serial.println(t1 - t0);
+
+  SET_HI();
+  EEPROM.write(200, 1);
+  EEPROM.write(201, 2);
+  SET_LO();
+
+  delay(10);
+
+
+
+  // ----------- READ 2 BYTES -----------
+  t0 = micros();
+  byte a = EEPROM.read(200);
+  byte b = EEPROM.read(201);
+  t1 = micros();
+  Serial.print(F("READ 2B: "));
+  Serial.println(t1 - t0);
+
+  SET_HI();
+  a = EEPROM.read(200);
+  b = EEPROM.read(201);
+  SET_LO();
+
+  delay(10);
+
+
+
+  // ----------- WRITE 4 BYTES -----------
+  t0 = micros();
+  EEPROM.write(300, 1);
+  EEPROM.write(301, 2);
+  EEPROM.write(302, 3);
+  EEPROM.write(303, 4);
+  t1 = micros();
+  Serial.print(F("WRITE 4B: "));
+  Serial.println(t1 - t0);
+
+  SET_HI();
+  EEPROM.write(300, 1);
+  EEPROM.write(301, 2);
+  EEPROM.write(302, 3);
+  EEPROM.write(303, 4);
+  SET_LO();
+
+  delay(10);
+
+
+
+  // ----------- READ 4 BYTES -----------
+  t0 = micros();
+  r = EEPROM.read(300);
+  r = EEPROM.read(301);
+  r = EEPROM.read(302);
+  r = EEPROM.read(303);
+  t1 = micros();
+  Serial.print(F("READ 4B: "));
+  Serial.println(t1 - t0);
+
+  SET_HI();
+  EEPROM.read(300);
+  EEPROM.read(301);
+  EEPROM.read(302);
+  EEPROM.read(303);
+  SET_LO();
+
+  delay(10);
+
+
+
+  // ----------- FULL SWEEP (4096 BYTES) -----------
+  t0 = micros();
+  for (int i = 0; i < 4096; i++) {
+    EEPROM.write(i, (byte)(i & 0xFF));
   }
+  t1 = micros();
+  Serial.print(F("WRITE 4096B: "));
+  Serial.println(t1 - t0);
+
+  SET_HI();
+  for (int i = 0; i < 4096; i++) {
+    EEPROM.write(i, (byte)(i & 0xFF));
+  }
+  SET_LO();
+
+
+  Serial.println(F("----------------------"));
+  while (1);   // do not rerun and overwrite everything again
+}
+
+
